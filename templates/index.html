@@ -1,0 +1,130 @@
+{{define "content"}}
+<section class="card">
+    <h2>Вхідні дані</h2>
+    <form method="post" action="/" class="form-grid">
+        <fieldset>
+            <legend>Параметри лінії електропередачі (для обох схем)</legend>
+            <label>
+                Інтенсивність відмови лінії \(\lambda_\ell\), 1/рік
+                <input type="number" step="0.0001" name="lambdaLine"
+                       value="{{printf "%.4f" .Input.LambdaLine}}" required>
+            </label>
+            <label>
+                Середній час ремонту лінії \(t_{\mathrm{вр},\ell}\), год
+                <input type="number" step="0.1" name="repairLine"
+                       value="{{printf "%.1f" .Input.RepairLineHours}}" required>
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Параметри трансформатора (однотрансформаторна ГТП)</legend>
+            <label>
+                Інтенсивність відмови трансформатора \(\lambda_T\), 1/рік
+                <input type="number" step="0.0001" name="lambdaTransformer"
+                       value="{{printf "%.4f" .Input.LambdaTransformer}}" required>
+            </label>
+            <label>
+                Середній час ремонту трансформатора \(t_{\mathrm{вр},T}\), год
+                <input type="number" step="0.1" name="repairTransformer"
+                       value="{{printf "%.1f" .Input.RepairTransfHours}}" required>
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Параметри навантаження та вартості недовідпущеної енергії</legend>
+            <label>
+                Середнє навантаження, МВт
+                <input type="number" step="0.1" name="loadPower"
+                       value="{{printf "%.1f" .Input.LoadPowerMW}}" required>
+            </label>
+            <label>
+                Вартість 1 МВт·год недовідпущеної енергії, грош. од./МВт·год
+                <input type="number" step="0.01" name="costPerMWh"
+                       value="{{printf "%.2f" .Input.CostPerMWh}}" required>
+            </label>
+        </fieldset>
+
+        <div class="form-actions">
+            <button type="submit">Розрахувати</button>
+        </div>
+    </form>
+</section>
+
+{{if .Result}}
+<section class="card">
+    <h2>Результати розрахунку надійності</h2>
+    <div class="results-grid">
+        <div>
+            <h3>Проміжні показники</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Незалежні показники</th>
+                    <th>Значення</th>
+                </tr>
+                <tr>
+                    <td>Невідмовність лінії (одноколова), \(U_\ell\)</td>
+                    <td>{{printf "%.6f" .Result.ULineSingle}}</td>
+                </tr>
+                <tr>
+                    <td>Невідмовність лінії (двоколова, паралельна робота), \(U_{\ell,2}\)</td>
+                    <td>{{printf "%.6f" .Result.ULineDouble}}</td>
+                </tr>
+                <tr>
+                    <td>Невідмовність трансформатора, \(U_T\)</td>
+                    <td>{{printf "%.6f" .Result.UTransformer}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Показники системи електропостачання</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Показник</th>
+                    <th>Одноколова схема</th>
+                    <th>Двоколова схема</th>
+                </tr>
+                <tr>
+                    <td>Невідмовність системи, \(U\)</td>
+                    <td>{{printf "%.6f" .Result.USingleSystem}}</td>
+                    <td>{{printf "%.6f" .Result.UDoubleSystem}}</td>
+                </tr>
+                <tr>
+                    <td>Готовність системи, \(A = 1-U\)</td>
+                    <td>{{printf "%.6f" .Result.ASingleSystem}}</td>
+                    <td>{{printf "%.6f" .Result.ADoubleSystem}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Оцінювання збитків від перерв електропостачання</h2>
+    <table>
+        <tbody>
+        <tr>
+            <th>Показник</th>
+            <th>Одноколова схема</th>
+            <th>Двоколова схема</th>
+        </tr>
+        <tr>
+            <td>Очікуваний недовідпуск енергії, МВт·год/рік</td>
+            <td>{{printf "%.3f" .Result.EENSSingleMWh}}</td>
+            <td>{{printf "%.3f" .Result.EENSDoubleMWh}}</td>
+        </tr>
+        <tr>
+            <td>Очікувані річні збитки, грош. од./рік</td>
+            <td>{{printf "%.2f" .Result.CostSingle}}</td>
+            <td>{{printf "%.2f" .Result.CostDouble}}</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+{{end}}
+{{end}}
+

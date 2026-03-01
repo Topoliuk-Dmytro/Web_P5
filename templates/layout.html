@@ -1,0 +1,32 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>ПР5 – Веб калькулятор надійності</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="page-header">
+    <div class="container">
+        <h1>Практична робота №5</h1>
+        <p>Веб калькулятор для порівняння надійності одноколової та двоколової систем електропередачі
+            і розрахунку збитків від перерв електропостачання (однотрансформаторна ГТП)</p>
+    </div>
+</header>
+
+<main class="page-main">
+    <div class="container">
+        {{template "content" .}}
+    </div>
+</main>
+
+<footer class="page-footer">
+    <div class="container">
+        <p>ПР5. Веб-програмування на Go.</p>
+    </div>
+</footer>
+</body>
+</html>
+{{end}}
+
